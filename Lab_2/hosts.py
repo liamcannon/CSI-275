@@ -1,4 +1,4 @@
-"""Liam Cannons code for Lab 2
+"""Liam Cannons code for Lab 2.
 
 Author: Liam Cannon
 Class: CSI-275-01
@@ -15,7 +15,6 @@ assignment may, for the purpose of assessing this assignment:
 - the purpose of future plagiarism checking)
 """
 
-
 """Student code for Lab/HW1.
 
     Run python autograder.py
@@ -24,8 +23,6 @@ Champlain College CSI-235, Spring 2019
 The following code was written by Joshua Auerbach (jauerbach@champlain.edu)
 Host class __init__ function by Jason Reeves 1/4/2021 (reeves@champlain.edu)
 """
-
-from util import raise_not_defined
 
 
 class InvalidEntryError(Exception):
@@ -45,19 +42,6 @@ def is_valid_ip_address(ip_address):
 
     """
     #   *** YOUR CODE HERE ***
-    """
-    counter = 0
-    for c in ip_address:
-        if(c.isalpha() and c != "."):
-            return False
-        else:
-            if(c == "."):
-                counter += 1
-    if(counter == 3):
-        return True
-    else:
-        return False
-    """
     ip_address = str(ip_address).split('.')
     if(len(ip_address) != 4):
         return False
@@ -70,6 +54,7 @@ def is_valid_ip_address(ip_address):
         except ValueError:
             return False
     return True
+
 
 def is_valid_hostname(hostname):
     """Return whether the given hostname is valid or not.
@@ -92,13 +77,12 @@ def is_valid_hostname(hostname):
         return False
     if not hostname[-1].isalnum():
         return False
-
-    for c in hostname:            
+    for c in hostname:      
         if not c == '.' and not c == '-':
             if not c.isalnum():
                 return False
     return True
-    
+
 
 class Hosts:
     """The Hosts class handles translating hostnames to ip addresses."""
@@ -187,7 +171,6 @@ class Hosts:
             return True
         return False
 
-
     def get_ip(self, hostname):
         """Return the IP for a given hostname.
 
@@ -195,7 +178,7 @@ class Hosts:
         None is returned.
         """
         #   *** YOUR CODE HERE ***
-        if not hostname in self.hostnames:
+        if hostname not in self.hostnames:
             return None
         index = self.hostnames.index(hostname)
 
