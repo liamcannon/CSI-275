@@ -77,7 +77,7 @@ def is_valid_hostname(hostname):
         return False
     if not hostname[-1].isalnum():
         return False
-    for c in hostname:      
+    for c in hostname:
         if not c == '.' and not c == '-':
             if not c.isalnum():
                 return False
