@@ -1,6 +1,18 @@
-#File sort.py
-#Lab_1 Sorting with Python
-#Author Liam Cannon
+"""Liam Cannons code for Lab 3.
+Author: Liam Cannon
+Class: CSI-275-01
+Assignment: Lab_3
+Due Date: 2/15/2021
+Certification of Authenticity:
+I certify that this is entirely my own work, except where I have given
+fully-documented references to the work of others. I understand the definition
+and consequences of plagiarism and acknowledge that the assessor of this
+assignment may, for the purpose of assessing this assignment:
+- Reproduce this assignment and provide a copy to another member of academic
+- staff; and/or Communicate a copy of this assignment to a plagiarism checking
+- service (which may then retain a copy of this assignment on its database for
+- the purpose of future plagiarism checking)
+"""
 import socket
 
 sock = socket.socket()
@@ -29,7 +41,8 @@ def build_list():
     return unsortedArray
 
 def sort_list(unsortedList):
-
+    """ Takes in an unsorted list, connects to the required ipv4 address where the list is sent ordered and returned
+    """
     print("unsorted:", unsortedList)
     sock.connect(("52.23.82.199", 7778))
     data = "LIST"
