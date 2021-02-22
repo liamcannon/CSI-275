@@ -45,51 +45,48 @@ class UDPClient:
         self.udp_port = port
         self.udp_request_id = request_id
 
-    def send_message(self, data):
-        """Send Data using both ID and non ID.
-
-        separates sending data from original string.
-        """
-        wait_time = self.udp_sock.settimeout(constants.INITIAL_TIMEOUT)
+    def send_data(self, c):
+        wait_time = constants.INITIAL_TIMEOUT
+        response_str = ""
         while True:
-            if self.udp_request_id:
-                try:
-                    req_id = random.randint(0, constants.MAX_ID)
-                    send_str = str(req_id) + "|" + data
-                    # no matter what I did the linter hated it so it stays like this
-                    self.udp_sock.sendto(send_str.encode("ascii"), (self.udp_host, self.udp_port))
-                    response, address = self.udp_sock.recvfrom(4096)
-                    response_id = response.decode("ascii").split
-                    if(response_id == req_id):
-                        return response_id[1]
-                    else:
-                        print("Invalid ID #")
-                        continue
-                except TimeOutError:
-                    raise TimeOutError()
             try:
-                # no matter what I did the linter hated it so it stays like this
-                self.udp_sock.sendto(data.encode("ascii"), (self.udp_host, self.udp_port))
-                response, address = self.udp_sock.recvfrom(4096)
-                return response.decode("ascii")
-            except socket.timeout:
                 self.udp_sock.settimeout(wait_time)
-                if self.udp_sock.gettimeout() >= constants.MAX_TIMEOUT:
-                    raise TimeOutError()
+                if self.udp_request_id:
+                    req_id = random.randint(0, constants.MAX_ID)
+                    data = (str(req_id)) + "|" + c
+                    self.udp_sock.sendto(data.encode("ascii"), (
+                        self.udp_host, self.udp_sock))
+                    response, address = self.udp_sock.recvfrom(
+                        constants.MAX_BYTES)
+                else:
+                    self.udp_sock.sendto(c.encode("ascii"), (
+                        self.udp_host, self.udp_port))
+                    response, address = self.udp_sock.recvfrom(1)
+
+                response = response.decode("ascii")
+
+                if self.udp_request_id:
+                    if req_id == int(response.split("|")[0]):
+                        response_str += response.split("|")[1]
+                    else:
+                        continue
+                else:
+                    response_str += response
+            except socket.timeout:
+                if wait_time >= constants.MAX_TIMEOUT:
+                    raise(TimeOutError)
+                wait_time *= 2
+                if wait_time > constants.MAX_TIMEOUT:
+                    wait_time = constants.MAX_TIMEOUT
+                return response_str
 
     def send_message_by_character(self, data):
         """Send message by character for param data.
 
         iterates through the param data and calls send_message
         """
-        valid_data = ""
-        if self.udp_request_id:
-            for c in data:
-                valid_data += str(self.send_message(c)) + " "
-            print(valid_data)
         for c in data:
-            print(self.send_message(c))
-
+            self.send_data(c)
 
 class TimeOutError(Exception):
     """Used for When the UDP socket times out."""
