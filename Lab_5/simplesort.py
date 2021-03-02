@@ -10,9 +10,9 @@ def remove_point_zero(value):
   return value
 
 class SortServer:    
-    """Don't forget your docstring!"""  
+    """class for establishing a sorting server."""  
     def __init__(self, host, port):        
-        "Don't forget your docstring!" 
+        "Init function for establishing variables." 
         #assigning variables and init sock
         self.address_tuple = (host, port)
         self.tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,23 +20,30 @@ class SortServer:
                
         pass  
     def handle_data(self, data):
+        """ Handle data deals with organization and validating of data."""
         split_data = data.split("|")
         sort_type = "a"
+        #checks if there is a pipe and splits data and sort type 
         if len(split_data) == 2:
             sort_type = split_data[1]
             data = split_data[0]
         data = data.split(" ")
-        print(data)
+
         try:
+            #catches all the errors possible 
+            #LIST not there, only LIST there, checking to make sure
+            # theres a valid pipe char
             if not data[0] == "LIST":
                 return "ERROR"
             data = data[1:]
             if len(data) == 0:
                 return "ERROR"
             if sort_type == "a":
+                #casting as float
                 data = [float(i) for i in data]
                 data.sort()
             elif sort_type == "d":
+                #casting as float
                 data = [float(i) for i in data]
                 data.sort(reverse=True)
             elif sort_type == "s":
@@ -45,15 +52,15 @@ class SortServer:
                 return "ERROR"
         except ValueError:
             return "ERROR"
+        #used to remove .0's from floats 
         data = [remove_point_zero(i) for i in data]
         data = [str(i) for i in data]
         data = " ".join(data)
         data = "SORTED " + data
-        print(data)
         return data
 
     def run_server(self):        
-        """Don't forget your docstring!"""
+        """Runs the server waits for client and relys on handle data to do the rest."""
         self.tcp_sock.listen(20)
         while True:
             print("waiting")
@@ -63,6 +70,7 @@ class SortServer:
                 data = client_sock.recv(4096)
                 data = data.decode("ascii")
                 try:
+                    #passes off data to handle data to keep things organized
                     data = self.handle_data(data)
                     client_sock.sendall(data.encode("ascii"))
                 except ValueError:
@@ -71,20 +79,3 @@ class SortServer:
 if __name__ == "__main__":    
     server = SortServer(HOST, PORT)    
     server.run_server()
-
-
-    """
-    tcp_sock = socket.socket(AF_NET, Stream or somthing like that)
-    address_tuple = (host, port)
-    tcp_sock.bind(address_tuple)
-    tcp_sock.listen(20)
-    client_sock, address = tcp_sock.accept()
-        put in loop while True:
-    while True:
-        data = connection.recv(4096)
-        if not data:
-            break
-    data = client_sock.recv(4096)
-    response = "Yep cock"
-    client_sock.sendall(response.encode("ascii))
-    """
