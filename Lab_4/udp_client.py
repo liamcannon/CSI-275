@@ -45,48 +45,56 @@ class UDPClient:
         self.udp_port = port
         self.udp_request_id = request_id
 
-    def send_data(self, c):
-        wait_time = constants.INITIAL_TIMEOUT
-        response_str = ""
+    def try_send(self, data):
+        """Try send Attempts to send the data.
+
+        errors if the socket timesout
+        """
+        self.udp_sock.settimeout(constants.INITIAL_TIMEOUT)
         while True:
             try:
-                self.udp_sock.settimeout(wait_time)
-                if self.udp_request_id:
-                    req_id = random.randint(0, constants.MAX_ID)
-                    data = (str(req_id)) + "|" + c
-                    self.udp_sock.sendto(data.encode("ascii"), (
-                        self.udp_host, self.udp_sock))
-                    response, address = self.udp_sock.recvfrom(
-                        constants.MAX_BYTES)
-                else:
-                    self.udp_sock.sendto(c.encode("ascii"), (
-                        self.udp_host, self.udp_port))
-                    response, address = self.udp_sock.recvfrom(1)
-
-                response = response.decode("ascii")
-
-                if self.udp_request_id:
-                    if req_id == int(response.split("|")[0]):
-                        response_str += response.split("|")[1]
-                    else:
-                        continue
-                else:
-                    response_str += response
+                response = self.send_data(data)
+                if response is None:
+                    continue
+                return response
             except socket.timeout:
-                if wait_time >= constants.MAX_TIMEOUT:
-                    raise(TimeOutError)
-                wait_time *= 2
-                if wait_time > constants.MAX_TIMEOUT:
-                    wait_time = constants.MAX_TIMEOUT
-                return response_str
+                self.udp_sock.settimeout(self.udp_sock.gettimeout()*2)
+                if(self.udp_sock.gettimeout() > constants.MAX_TIMEOUT):
+                    raise TimeOutError()
+
+    def send_data(self, data):
+        """Send the data to the established host and port.
+
+        separate from send by char to split up the work
+        """
+        req_id = 0
+        if self.udp_request_id:
+            req_id = random.randint(0, constants.MAX_ID)
+            data = str(req_id) + "|" + data
+        self.udp_sock.sendto(data.encode("ascii"), (
+            self.udp_host, self.udp_port))
+        response = self.udp_sock.recvfrom(
+            constants.MAX_BYTES)[0].decode("ascii")
+        if self.udp_request_id:
+            response = response.split('|')
+            if req_id == int(response[0]):
+                return response[1]
+        else:
+            return response
 
     def send_message_by_character(self, data):
         """Send message by character for param data.
 
         iterates through the param data and calls send_message
         """
-        for c in data:
-            self.send_data(c)
+        response_str = ""
+        try:
+            for c in data:
+                response_str += self.try_send(c)
+        except TimeOutError:
+            raise TimeOutError()
+        return response_str
+        # when running the questions individually they all work but for some reason when run together one of the tests in q1 fails
 
 class TimeOutError(Exception):
     """Used for When the UDP socket times out."""
