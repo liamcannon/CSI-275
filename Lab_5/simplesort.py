@@ -31,12 +31,12 @@ class SortServer:
                 data = [float(i) for i in data]
                 data.sort()
             elif sort_type == "s":
-                data = [str(i) for i in data]
                 data.sort()
         except ValueError:
             return "ERROR"
-        " ".join(data)
         data.insert(0, "SORTED")
+        data = ' '.join([str(elem) for elem in data]) 
+        print(data)
         return data
 
     def run_server(self):        
