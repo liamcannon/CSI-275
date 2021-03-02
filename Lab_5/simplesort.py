@@ -3,6 +3,11 @@ import socket
 HOST = "localhost"
 PORT = 20000
 
+def remove_point_zero(value):
+  value = str(value)
+  if value.endswith(".0"):
+    return value[:-2]
+  return value
 
 class SortServer:    
     """Don't forget your docstring!"""  
@@ -21,21 +26,29 @@ class SortServer:
             sort_type = split_data[1]
             data = split_data[0]
         data = data.split(" ")
+        print(data)
         try:
             if not data[0] == "LIST":
+                return "ERROR"
+            data = data[1:]
+            if len(data) == 0:
                 return "ERROR"
             if sort_type == "a":
                 data = [float(i) for i in data]
                 data.sort()
             elif sort_type == "d":
                 data = [float(i) for i in data]
-                data.sort()
+                data.sort(reverse=True)
             elif sort_type == "s":
                 data.sort()
+            else:
+                return "ERROR"
         except ValueError:
             return "ERROR"
-        data.insert(0, "SORTED")
-        data = ' '.join([str(elem) for elem in data]) 
+        data = [remove_point_zero(i) for i in data]
+        data = [str(i) for i in data]
+        data = " ".join(data)
+        data = "SORTED " + data
         print(data)
         return data
 
