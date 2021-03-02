@@ -3,6 +3,7 @@ import socket
 HOST = "localhost"
 PORT = 20000
 
+
 class SortServer:    
     """Don't forget your docstring!"""  
     def __init__(self, host, port):        
@@ -13,7 +14,7 @@ class SortServer:
         self.tcp_sock.bind(self.address_tuple)
                
         pass  
-
+    
     def run_server(self):        
         """Don't forget your docstring!"""
         self.tcp_sock.listen(20)
@@ -24,33 +25,44 @@ class SortServer:
             while True:
                 data = client_sock.recv(4096)
                 data = data.decode("ascii")
-                if not data.startswith("LIST "):
-                    client_sock.sendall("ERROR".encode("ascii"))
-                if data.startswith("LIST "):
-                    #if the data starts with list then this just gets rid of that and the space
-                    data = data[5:]
+                print("RECIEVED " + data)
                 try:
-                    #default sort type
+                    data = data.split(" ")
+                    print(type(data))
                     sort_type = 'a'
+                    if not data[0] == "LIST":
+                        return "ERROR"
+                    #if the data starts with list then this just gets rid of that and the space
+                    data = data[1:]
+                    if len(data) == 0:
+                        return "ERROR"
+                    if "|" in data[-1]:
+                        sort_type = data[-1][-1]
+                        data[-1] = data[-1][:2]
+                    #default sort type
                     #splitting to check for pipe
-                    split = data.split('|')
-                    data = split[0]
-                    if len(split) == 2:
-                        #if the split len is 2 then there is a pipe
-                        sort_type = split[1]
-                    if sort_type == 'a':
+                    if sort_type == "a":
                         data = [float(i) for i in data]
+                        """
+                        for i in data:
+                            data[i] = data[float(i)]
+                        """
                         data.sort()
-                        client_sock.sendall(("SORTED " + data).encode("ascii"))
-                    elif sort_type == 'd':
+                    elif sort_type == "d":
                         data = [float(i) for i in data]
                         data.sort(reverse=True)
-                        client_sock.sendall(("SORTED " + data).encode("ascii"))
-                    elif sort_type == 's':
+                    elif sort_type == "s":
+                        #data = [str(i) for i in data]
                         data.sort()
-                        client_sock.sendall(("SORTED " + data).encode("ascii"))
+                        print("S HERE 2")
+                    data = [str(i) for i in data]
+                    " ".join(data)
+                    data.insert(0, "SORTED")
+                    for i in data:
+                        print(i)
+                    client_sock.sendall(data.encode("ascii"))
                 except ValueError:
-                    client_sock.sendall(("ERROR").encode("ascii"))
+                    return "ERROR"
         
 if __name__ == "__main__":    
     server = SortServer(HOST, PORT)    
