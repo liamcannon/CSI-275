@@ -32,8 +32,7 @@ def handler(client_socket, addr):
 
         # Decode the data into a list
         data = zlib.decompress(data)
-        print("Decompressed", len(data))
-        data_list = json.loads(data).decode('utf-8')
+        data_list = json.loads(data.decode('utf-8'))
 
 
         # Get time of connection
@@ -76,9 +75,9 @@ def handler(client_socket, addr):
         # Send our response, whatever it may be
         print(f"Returning {return_data} to the client")
         return_data = return_data.encode('utf-8')
+        return_data = zlib.compress(return_data)
         print("Compressed", len(return_data))
         client_socket.sendall(return_data)
-        print(len(return_data))
 
 
 if __name__ == "__main__":
