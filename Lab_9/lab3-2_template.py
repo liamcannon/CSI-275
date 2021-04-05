@@ -91,7 +91,7 @@ def main():
     #Answer the following question in your submission: 
     # At what value of x does the compressed JSON 
     # become equal to or smaller than the uncompressed JSON?
-    # 15
+    # 16
 
 if __name__ == "__main__":
     main()
