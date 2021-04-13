@@ -88,6 +88,7 @@ class EightBallServer:
             buffer = b''
             #response = ""
             questions = 0
+            answers = []
             while True:
                 '''
                 recv_until_delimiter returns data and storage so we need var's to hold that
@@ -100,8 +101,9 @@ class EightBallServer:
                     break
                 #creates a random response from the ANSWER_LIST above
                 #response += ANSWER_LIST[random.randrange(len(ANSWER_LIST))]
-                answers = []
+                # Faster than above o(n) vs. o(n^2)
                 for _ in range(0, questions):
+                    print(_)
                     answers.append(ANSWER_LIST[random.randrange(len(ANSWER_LIST))])
                     response = "".join(answers)
                 #just printing to see which response it sends
