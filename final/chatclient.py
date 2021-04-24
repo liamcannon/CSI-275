@@ -28,7 +28,7 @@ def chat_server():
         recv_data_sock.connect((HOST, PORT))
         send_data_sock.connect((HOST, PORT))
         data = ['START', username]
-        json_data = json.dumps(full_data).encode('utf-8')
+        json_data = json.dumps(data).encode('utf-8')
         full_data = len(json_data).to_bytes(4, 'big') + json_data
         recv_data_sock.sendall(full_data)
     except Exception:
@@ -36,9 +36,22 @@ def chat_server():
         send_data_sock.close()
         print('Closing connection')
 
-def get_chat():
+def get_chat(chat):
+    # checking if the message is greater than 0
+    if len(chat) > 0 and msg[0] == '@':
+        recipient = msg.split()[0][1:]
+        msg = " ".join(msg.split()[1:])
+        send_data(['PRIVATE', username, msg, recipient])
+    elif msg == 'EXIT':
+        send_data(['EXIT', username])
+        send_data_sock.close()
+        recv_data_sock.close()
+    else:
+        send_data(['BROADCAST', username, msg])
     
-
-
 if __name__ == "__main__":
-    
+    username = input("Enter a display name: ")
+    username = username.replace(' ', '_')
+    chat_server()
+    _thread.start_new_thread(recv_data, ())
+
