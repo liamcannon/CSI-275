@@ -32,7 +32,7 @@ def handler(client_socket, addr):
 
         # Decode the data into a list
         data = zlib.decompress(data)
-        data_list = json.loads(data.decode('utf-8'))
+        data_list = json.loads(data.decode('utf-8'))            
 
 
         # Get time of connection
