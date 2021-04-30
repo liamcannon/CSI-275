@@ -32,10 +32,9 @@ recv_data_sock = socket.socket()
 
 def send_data(data):
     '''Handles sending all data'''
-    while True:
-        json_data = json.dumps(data).encode('utf-8')
-        full_data = len(json_data).to_bytes(4, 'big') + json_data
-        send_data_sock.sendall(full_data)
+    json_data = json.dumps(data).encode('utf-8')
+    full_data = len(json_data).to_bytes(4, 'big') + json_data
+    send_data_sock.sendall(full_data)
 
 
 def recv_data():
@@ -53,7 +52,6 @@ def chat_server():
         data = ['START', username]
         json_data = json.dumps(data).encode('utf-8')
         full_data = len(json_data).to_bytes(4, 'big') + json_data
-        print("HERE", full_data)
         recv_data_sock.sendall(full_data)
     except Exception:
         recv_data_sock.close()
@@ -64,7 +62,6 @@ def chat_server():
 def get_chat():
     # checking if the message is greater than 0
     while True:
-        print('here\n')
         chat = input('Chat: ')
         if len(chat) > 0 and chat[0] == '@':
             recipient = chat.split()[0][1:]
@@ -83,5 +80,4 @@ if __name__ == "__main__":
     username = username.replace(' ', '_')
     chat_server()
     _thread.start_new_thread(recv_data, ())
-    _thread.start_new_thread(get_chat, ())
-
+    get_chat()
