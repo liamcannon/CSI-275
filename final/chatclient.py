@@ -3,7 +3,7 @@ Author: Liam Cannon
 Class : CSI-275
 Assignment : Final
 Date Due: 4/30/2021
-  Description : Chat Client 
+  Description : Chat Client
   Certification of Authenticity :
     I certify that this is entirely my own work, except where I have given
     fully - documented references to the work of others.I understand the
@@ -64,17 +64,17 @@ def chat_server():
 def get_chat(chat):
     # checking if the message is greater than 0
     while True:
-       temp =  input('Chat')
-    if len(chat) > 0 and chat[0] == '@':
-        recipient = chat.split()[0][1:]
-        chat = " ".join(chat.split()[1:])
-        send_data(['PRIVATE', username, chat, recipient])
-    elif chat == 'EXIT':
-        send_data(['EXIT', username])
-        send_data_sock.close()
-        recv_data_sock.close()
-    else:
-        send_data(['BROADCAST', username, chat])
+        chat = input('Chat')
+           if len(chat) > 0 and chat[0] == '@':
+                recipient = chat.split()[0][1:]
+                chat = " ".join(chat.split()[1:])
+                send_data(['PRIVATE', username, chat, recipient])
+            elif chat == 'EXIT':
+                send_data(['EXIT', username])
+                send_data_sock.close()
+                recv_data_sock.close()
+            else:
+                send_data(['BROADCAST', username, chat])
 
 
 if __name__ == "__main__":
@@ -82,3 +82,4 @@ if __name__ == "__main__":
     username = username.replace(' ', '_')
     chat_server()
     _thread.start_new_thread(get_chat, ())
+    _thread.start_new_thread(recv_data, ())
