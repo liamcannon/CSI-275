@@ -61,10 +61,11 @@ def chat_server():
         print('Closing connection')
 
 
-def get_chat(chat):
+def get_chat():
     # checking if the message is greater than 0
     while True:
-        chat = input('Chat')
+        print('here\n')
+        chat = input('Chat: ')
         if len(chat) > 0 and chat[0] == '@':
             recipient = chat.split()[0][1:]
             chat = " ".join(chat.split()[1:])
@@ -81,5 +82,6 @@ if __name__ == "__main__":
     username = input("Enter a display name: ")
     username = username.replace(' ', '_')
     chat_server()
-    _thread.start_new_thread(get_chat, ())
     _thread.start_new_thread(recv_data, ())
+    _thread.start_new_thread(get_chat, ())
+
