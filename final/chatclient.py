@@ -16,6 +16,7 @@ Date Due: 4/30/2021
       database for the purpose of future plagiarism checking)
 '''
 
+
 import _thread
 import socket
 import json
@@ -62,6 +63,8 @@ def chat_server():
 
 def get_chat(chat):
     # checking if the message is greater than 0
+    while True:
+       temp =  input('Chat')
     if len(chat) > 0 and chat[0] == '@':
         recipient = chat.split()[0][1:]
         chat = " ".join(chat.split()[1:])
@@ -78,10 +81,4 @@ if __name__ == "__main__":
     username = input("Enter a display name: ")
     username = username.replace(' ', '_')
     chat_server()
-    try:
-        chat = input("Chat: ")
-        get_chat(chat)
-    except Exception:
-        pass
-    _thread.start_new_thread(recv_data, ())
-    _thread.start_new_thread(send_data, ())
+    _thread.start_new_thread(get_chat, ())
