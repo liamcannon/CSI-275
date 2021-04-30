@@ -110,7 +110,7 @@ def handle_message(conn, addr):
         while True:
             msg_size = int.from_bytes(conn.recv(4), 'big')
             full_data = json.loads(conn.recv(msg_size).decode('utf-8'))
-            first_index = str(full_data[0]).upper()
+            first_index = str(full_data[0])
             if first_index == 'START':
                 open_connection(full_data, conn)
             elif first_index == 'EXIT':

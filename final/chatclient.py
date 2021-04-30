@@ -31,9 +31,10 @@ recv_data_sock = socket.socket()
 
 def send_data(data):
     '''Handles sending all data'''
-    json_data = json.dumps(data).encode('utf-8')
-    full_data = len(json_data).to_bytes(4, 'big') + json_data
-    send_data_sock.sendall(full_data)
+    while True:
+        json_data = json.dumps(data).encode('utf-8')
+        full_data = len(json_data).to_bytes(4, 'big') + json_data
+        send_data_sock.sendall(full_data)
 
 
 def recv_data():
@@ -77,4 +78,10 @@ if __name__ == "__main__":
     username = input("Enter a display name: ")
     username = username.replace(' ', '_')
     chat_server()
+    try:
+        chat = input("Chat: ")
+        get_chat(chat)
+    except Exception:
+        pass
     _thread.start_new_thread(recv_data, ())
+    _thread.start_new_thread(send_data, ())
