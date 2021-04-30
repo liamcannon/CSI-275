@@ -65,16 +65,16 @@ def get_chat(chat):
     # checking if the message is greater than 0
     while True:
         chat = input('Chat')
-           if len(chat) > 0 and chat[0] == '@':
-                recipient = chat.split()[0][1:]
-                chat = " ".join(chat.split()[1:])
-                send_data(['PRIVATE', username, chat, recipient])
-            elif chat == 'EXIT':
-                send_data(['EXIT', username])
-                send_data_sock.close()
-                recv_data_sock.close()
-            else:
-                send_data(['BROADCAST', username, chat])
+        if len(chat) > 0 and chat[0] == '@':
+            recipient = chat.split()[0][1:]
+            chat = " ".join(chat.split()[1:])
+            send_data(['PRIVATE', username, chat, recipient])
+        elif chat == 'EXIT':
+            send_data(['EXIT', username])
+            send_data_sock.close()
+            recv_data_sock.close()
+        else:
+            send_data(['BROADCAST', username, chat])
 
 
 if __name__ == "__main__":
