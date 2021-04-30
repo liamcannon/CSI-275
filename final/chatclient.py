@@ -62,16 +62,16 @@ def chat_server():
 
 def get_chat(chat):
     # checking if the message is greater than 0
-    if len(chat) > 0 and msg[0] == '@':
-        recipient = msg.split()[0][1:]
-        msg = " ".join(msg.split()[1:])
-        send_data(['PRIVATE', username, msg, recipient])
-    elif msg == 'EXIT':
+    if len(chat) > 0 and chat[0] == '@':
+        recipient = chat.split()[0][1:]
+        chat = " ".join(chat.split()[1:])
+        send_data(['PRIVATE', username, chat, recipient])
+    elif chat == 'EXIT':
         send_data(['EXIT', username])
         send_data_sock.close()
         recv_data_sock.close()
     else:
-        send_data(['BROADCAST', username, msg])
+        send_data(['BROADCAST', username, chat])
 
 
 if __name__ == "__main__":
